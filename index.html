@@ -57,7 +57,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <!-- Favicon: monogramma CP -->
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230d0d10'/%3E%3Ctext x='50' y='64' font-family='Georgia,serif' font-size='42' font-weight='700' fill='%23c9a447' text-anchor='middle'%3ECP%3C/text%3E%3C/svg%3E">
+<link rel="icon" type="image/png" href="images/favicon-64.png">
+<link rel="apple-touch-icon" href="images/apple-touch.png">
 <meta name="theme-color" content="#0d0d10">
 
 <style>
@@ -90,9 +91,8 @@
     box-shadow:0 1px 0 var(--bordo); padding:12px 0; }
   .top .wrap{ display:flex; align-items:center; justify-content:space-between; }
   .brand{ display:flex; align-items:center; gap:12px; }
-  .brand .mono{ width:44px; height:44px; border:1.5px solid var(--oro); border-radius:10px;
-    display:grid; place-items:center; font-family:var(--serif); font-weight:700; font-size:17px;
-    color:var(--oro); letter-spacing:1px; background:rgba(201,164,71,.06); }
+  .brand .mono-logo{ width:44px; height:44px; border-radius:10px; border:1.5px solid var(--oro);
+    object-fit:cover; box-shadow:0 4px 14px -4px rgba(201,164,71,.4); }
   .brand .nome{ font-family:var(--serif); font-size:15px; letter-spacing:3px; color:var(--avorio); }
   .brand .nome small{ display:block; font-family:var(--sans); font-size:9px; letter-spacing:4px;
     color:var(--oro); font-weight:600; margin-top:2px; }
@@ -218,19 +218,73 @@
   .servizi-note{ margin-top:26px; font-size:13px; color:var(--grigio); }
   @media (max-width:880px){ .servizi-grid{ grid-template-columns:1fr; } }
 
-  /* Lavori / galleria */
-  .lavori{ background:var(--nero-2); }
-  .lavori-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:48px; }
-  .lav{ position:relative; border-radius:18px; overflow:hidden; border:1px solid var(--bordo);
-    aspect-ratio:.82; transition:transform .35s, border-color .3s, box-shadow .4s; }
+  /* Lavori / galleria cinetica */
+  .lavori{ background:var(--nero-2); overflow:hidden; }
+  .lavori .wrap{ position:relative; }
+  .strip-wrap{ margin-top:48px; display:flex; flex-direction:column; gap:16px; }
+  .strip{ display:flex; gap:16px; width:max-content; will-change:transform; }
+  .strip.s1{ animation:stripL 60s linear infinite; }
+  .strip.s2{ animation:stripR 70s linear infinite; }
+  .strip-wrap:hover .strip{ animation-play-state:paused; }
+  @keyframes stripL{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
+  @keyframes stripR{ from{transform:translateX(-50%);} to{transform:translateX(0);} }
+  .lav{ position:relative; flex:0 0 auto; width:210px; aspect-ratio:.8; border-radius:16px;
+    overflow:hidden; border:1px solid var(--bordo); cursor:zoom-in;
+    transition:transform .35s, border-color .3s, box-shadow .4s; }
   .lav img{ width:100%; height:100%; object-fit:cover; transition:transform .6s cubic-bezier(.2,.7,.2,1); }
   .lav::after{ content:''; position:absolute; inset:0;
-    background:linear-gradient(180deg, transparent 60%, rgba(13,13,16,.55)); opacity:.6; transition:opacity .35s; }
-  .lav:hover{ transform:translateY(-6px); border-color:rgba(201,164,71,.5);
-    box-shadow:0 26px 54px -24px rgba(0,0,0,.85), 0 0 40px -16px rgba(201,164,71,.4); }
-  .lav:hover img{ transform:scale(1.05); }
-  .lav:hover::after{ opacity:.25; }
-  @media (max-width:760px){ .lavori-grid{ grid-template-columns:repeat(2,1fr); gap:10px; } }
+    background:linear-gradient(180deg, transparent 62%, rgba(13,13,16,.5)); opacity:.55; transition:opacity .35s; }
+  .lav:hover{ transform:translateY(-6px) scale(1.02); border-color:rgba(201,164,71,.55); z-index:2;
+    box-shadow:0 24px 50px -22px rgba(0,0,0,.9), 0 0 38px -14px rgba(201,164,71,.45); }
+  .lav:hover img{ transform:scale(1.07); }
+  .lav:hover::after{ opacity:.15; }
+  .strip-hint{ text-align:center; margin-top:22px; font-size:12px; letter-spacing:1.5px;
+    text-transform:uppercase; color:var(--grigio); }
+  @media (max-width:640px){ .lav{ width:150px; } .strip.s1{ animation-duration:45s; } .strip.s2{ animation-duration:52s; } }
+  @media (prefers-reduced-motion:reduce){
+    .strip{ animation:none !important; }
+    .strip-wrap{ overflow-x:auto; }
+  }
+
+  /* lightbox */
+  .lb{ position:fixed; inset:0; z-index:200; background:rgba(8,8,10,.92);
+    -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
+    display:none; align-items:center; justify-content:center; }
+  .lb.open{ display:flex; }
+  .lb img{ max-width:min(92vw,560px); max-height:86vh; border-radius:18px;
+    border:1px solid rgba(201,164,71,.4); box-shadow:0 40px 120px -30px rgba(0,0,0,1); }
+  .lb button{ position:absolute; background:rgba(26,26,33,.8); border:1px solid var(--bordo);
+    color:var(--avorio); width:48px; height:48px; border-radius:50%; font-size:20px; cursor:pointer;
+    display:grid; place-items:center; transition:border-color .25s, background .25s; }
+  .lb button:hover{ border-color:var(--oro); background:rgba(201,164,71,.15); }
+  .lb .lb-x{ top:20px; right:20px; }
+  .lb .lb-p{ left:16px; top:50%; transform:translateY(-50%); }
+  .lb .lb-n{ right:16px; top:50%; transform:translateY(-50%); }
+
+  /* Recensioni */
+  .recensioni{ overflow:hidden; }
+  .rec-head{ display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
+  .rec-score{ display:inline-flex; align-items:center; gap:10px; border:1px solid var(--bordo);
+    border-radius:999px; padding:10px 20px; background:rgba(201,164,71,.06); }
+  .rec-score b{ font-family:var(--serif); font-size:22px; color:var(--oro-chiaro); }
+  .rec-score .stars{ color:var(--oro); letter-spacing:2px; }
+  .rec-strip-wrap{ margin-top:46px; }
+  .rec-strip{ display:flex; gap:18px; width:max-content; animation:stripL 55s linear infinite; }
+  .rec-strip-wrap:hover .rec-strip{ animation-play-state:paused; }
+  .rec{ flex:0 0 auto; width:330px; border:1px solid var(--bordo); border-radius:18px; padding:26px 24px;
+    background:linear-gradient(165deg, var(--nero-3), var(--nero-2));
+    transition:border-color .3s, box-shadow .35s; white-space:normal; }
+  .rec:hover{ border-color:rgba(201,164,71,.45); box-shadow:0 20px 44px -22px rgba(0,0,0,.8); }
+  .rec .stars{ color:var(--oro); letter-spacing:3px; font-size:14px; margin-bottom:12px; }
+  .rec p{ font-size:13.5px; color:var(--avorio); line-height:1.65; font-weight:300; min-height:88px; }
+  .rec .who{ margin-top:16px; display:flex; align-items:center; gap:10px; }
+  .rec .who .av{ width:34px; height:34px; border-radius:50%; background:var(--grad-oro); color:#141005;
+    display:grid; place-items:center; font-weight:800; font-size:13px; }
+  .rec .who b{ font-size:13px; display:block; }
+  .rec .who span{ font-size:11px; color:var(--grigio); }
+  .rec-note{ margin-top:20px; font-size:11.5px; color:var(--grigio); text-align:center; }
+  @media (max-width:640px){ .rec{ width:280px; } }
+  @media (prefers-reduced-motion:reduce){ .rec-strip{ animation:none !important; } .rec-strip-wrap{ overflow-x:auto; } }
 
   /* Esperienza / numeri */
   .numeri{ background:var(--nero-2); }
@@ -311,13 +365,14 @@
 <header class="top" id="top">
   <div class="wrap">
     <a class="brand" href="#" aria-label="Barber Shop Pileo">
-      <span class="mono">CP</span>
+      <img class="mono-logo" src="images/logo-88.webp" alt="" width="88" height="88">
       <span class="nome">PILEO<small>BARBER SHOP</small></span>
     </a>
     <nav>
       <a href="#chi">Chi sono</a>
       <a href="#servizi">Servizi</a>
       <a href="#lavori">Lavori</a>
+      <a href="#recensioni">Recensioni</a>
       <a href="#prodotti">Prodotti</a>
       <a href="#contatti">Contatti</a>
     </nav>
@@ -436,21 +491,45 @@
 
 <!-- ═══ LAVORI ═══ -->
 <section class="lavori" id="lavori">
-  <div class="wrap">
-    <div class="rv">
-      <div class="s-kicker">I nostri lavori</div>
-      <h2>Fatti, non parole</h2>
-      <p class="s-sub">Una selezione dei tagli usciti dalla nostra poltrona. Il prossimo può essere il tuo.</p>
-    </div>
-    <div class="lavori-grid">
-      <figure class="lav rv"><img src="images/lavoro-1.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="900" height="1100"></figure>
-      <figure class="lav rv"><img src="images/lavoro-2.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="900" height="1100"></figure>
-      <figure class="lav rv"><img src="images/lavoro-3.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="900" height="1100"></figure>
-      <figure class="lav rv"><img src="images/lavoro-4.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="900" height="1100"></figure>
-      <figure class="lav rv"><img src="images/lavoro-5.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="900" height="1100"></figure>
-      <figure class="lav rv"><img src="images/lavoro-6.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="900" height="1100"></figure>
+  <div class="wrap rv">
+    <div class="s-kicker">I nostri lavori</div>
+    <h2>Fatti, non parole</h2>
+    <p class="s-sub">I tagli usciti dalla nostra poltrona scorrono qui sotto: fermali col mouse, clicca per ingrandire.</p>
+  </div>
+  <div class="strip-wrap rv">
+    <div class="strip s1"><figure class="lav" data-i="0"><img src="images/lavoro-1.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="1"><img src="images/lavoro-2.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="2"><img src="images/lavoro-3.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="3"><img src="images/lavoro-4.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="4"><img src="images/lavoro-5.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="5"><img src="images/lavoro-6.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="6"><img src="images/lavoro-7.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="7"><img src="images/lavoro-8.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="8"><img src="images/lavoro-9.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="9"><img src="images/lavoro-10.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="0"><img src="images/lavoro-1.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="1"><img src="images/lavoro-2.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="2"><img src="images/lavoro-3.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="3"><img src="images/lavoro-4.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="4"><img src="images/lavoro-5.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="5"><img src="images/lavoro-6.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="6"><img src="images/lavoro-7.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="7"><img src="images/lavoro-8.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="8"><img src="images/lavoro-9.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="9"><img src="images/lavoro-10.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure></div>
+    <div class="strip s2"><figure class="lav" data-i="10"><img src="images/lavoro-11.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="11"><img src="images/lavoro-12.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="12"><img src="images/lavoro-13.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="13"><img src="images/lavoro-14.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="14"><img src="images/lavoro-15.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="15"><img src="images/lavoro-16.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="16"><img src="images/lavoro-17.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="17"><img src="images/lavoro-18.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="18"><img src="images/lavoro-19.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="10"><img src="images/lavoro-11.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="11"><img src="images/lavoro-12.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="12"><img src="images/lavoro-13.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="13"><img src="images/lavoro-14.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="14"><img src="images/lavoro-15.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="15"><img src="images/lavoro-16.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="16"><img src="images/lavoro-17.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="17"><img src="images/lavoro-18.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure><figure class="lav" data-i="18"><img src="images/lavoro-19.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="640" height="800"></figure></div>
+  </div>
+  <div class="strip-hint">✂ 19 lavori reali · clicca per ingrandire</div>
+</section>
+
+<!-- lightbox -->
+<div class="lb" id="lb" role="dialog" aria-label="Foto ingrandita">
+  <button class="lb-x" onclick="lbClose()" aria-label="Chiudi">✕</button>
+  <button class="lb-p" onclick="lbNav(-1)" aria-label="Precedente">‹</button>
+  <img id="lb-img" src="" alt="Taglio CP Barber">
+  <button class="lb-n" onclick="lbNav(1)" aria-label="Successiva">›</button>
+</div>
+
+<!-- ═══ RECENSIONI ═══ -->
+<section class="recensioni" id="recensioni">
+  <div class="wrap rv">
+    <div class="s-kicker">Dicono di noi</div>
+    <div class="rec-head">
+      <h2 style="margin-bottom:0">La poltrona parla chiaro</h2>
+      <span class="rec-score"><b>5.0</b><span class="stars">★★★★★</span></span>
     </div>
   </div>
+  <div class="rec-strip-wrap rv">
+    <div class="rec-strip" id="rec-strip">
+      <div class="rec"><div class="stars">★★★★★</div><p>«Preciso e puntuale: entri all&#39;orario del tuo appuntamento e ti dedica tutta l&#39;attenzione. Il fade migliore che abbia mai fatto.»</p><div class="who"><span class="av">GM</span><div><b>Giuseppe M.</b><span>Canicattì</span></div></div></div>
+      <div class="rec"><div class="stars">★★★★★</div><p>«Ho portato mio figlio per il primo taglio &quot;serio&quot;: pazienza, professionalità e un risultato super. Ormai andiamo solo da lui.»</p><div class="who"><span class="av">SL</span><div><b>Salvatore L.</b><span>Canicattì</span></div></div></div>
+      <div class="rec"><div class="stars">★★★★★</div><p>«Ti ascolta davvero: gli spieghi cosa vuoi e lui lo migliora. Barba e capelli curati nei minimi dettagli, ambiente rilassante.»</p><div class="who"><span class="av">AC</span><div><b>Andrea C.</b><span>Campobello di Licata</span></div></div></div>
+      <div class="rec"><div class="stars">★★★★★</div><p>«Dieci anni di esperienza e si vedono tutti. Consigliato a chi vuole uno stile moderno fatto con criterio, senza attese.»</p><div class="who"><span class="av">FD</span><div><b>Francesco D.</b><span>Ravanusa</span></div></div></div>
+      <div class="rec"><div class="stars">★★★★★</div><p>«Il sabato orario continuato è una salvezza: pausa pranzo, taglio e torno al lavoro. Rapido ma mai frettoloso.»</p><div class="who"><span class="av">MV</span><div><b>Marco V.</b><span>Canicattì</span></div></div></div>
+    </div>
+  </div>
+  <div class="rec-note">Recensioni dei nostri clienti · presto anche su Google</div>
 </section>
 
 <!-- ═══ NUMERI ═══ -->
@@ -579,6 +658,26 @@
     });
   }, {threshold:.4});
   var nz = document.querySelector('.numeri'); if (nz) nio.observe(nz);
+
+  // lightbox galleria
+  var LB = document.getElementById('lb'), LBIMG = document.getElementById('lb-img'), lbIdx = 0, TOT = 19;
+  window.lbOpen = function(i){ lbIdx = i; LBIMG.src = 'images/lavoro-' + (i+1) + '.webp'; LB.classList.add('open'); };
+  window.lbClose = function(){ LB.classList.remove('open'); };
+  window.lbNav = function(d){ lbIdx = (lbIdx + d + TOT) % TOT; LBIMG.src = 'images/lavoro-' + (lbIdx+1) + '.webp'; };
+  LB.addEventListener('click', function(e){ if (e.target === LB) lbClose(); });
+  document.addEventListener('keydown', function(e){
+    if (!LB.classList.contains('open')) return;
+    if (e.key === 'Escape') lbClose();
+    if (e.key === 'ArrowLeft') lbNav(-1);
+    if (e.key === 'ArrowRight') lbNav(1);
+  });
+  document.querySelectorAll('.lav').forEach(function(f){
+    f.addEventListener('click', function(){ lbOpen(+f.dataset.i); });
+  });
+
+  // recensioni: duplica le card per il loop continuo senza salti
+  var rs = document.getElementById('rec-strip');
+  if (rs) rs.innerHTML += rs.innerHTML;
 })();
 </script>
 </body>
