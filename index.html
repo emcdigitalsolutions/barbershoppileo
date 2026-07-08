@@ -38,6 +38,11 @@
   "address": { "@type": "PostalAddress", "addressLocality": "Canicattì", "addressRegion": "AG", "addressCountry": "IT" },
   "areaServed": ["Canicattì", "Agrigento e comuni limitrofi"],
   "priceRange": "€€",
+  "openingHoursSpecification": [
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Tuesday","Wednesday","Thursday","Friday"], "opens": "09:00", "closes": "12:30" },
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Tuesday","Wednesday","Thursday","Friday"], "opens": "15:00", "closes": "19:30" },
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "09:00", "closes": "21:00" }
+  ],
   "makesOffer": [
     { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Taglio completo" } },
     { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Taglio e sopracciglia" } },
@@ -156,16 +161,6 @@
     font-weight:800; font-size:11px; line-height:1.25; letter-spacing:.5px; transform:rotate(8deg);
     box-shadow:0 16px 40px -12px rgba(201,164,71,.6); }
   .mono-big .anni b{ font-size:26px; font-family:var(--serif); display:block; }
-  /* barber pole */
-  .pole{ position:absolute; left:-8px; bottom:-30px; width:34px; height:170px; border-radius:18px;
-    border:2px solid rgba(242,234,216,.25); overflow:hidden;
-    background:repeating-linear-gradient(45deg, #b23a48 0 14px, #f2ead8 14px 28px, #2d4f6b 28px 42px, #f2ead8 42px 56px);
-    background-size:100% 200%; animation:poleSpin 3.2s linear infinite;
-    box-shadow:0 20px 50px -18px rgba(0,0,0,.8); }
-  @keyframes poleSpin{ from{background-position:0 0;} to{background-position:0 79.2px;} }
-  .pole::before, .pole::after{ content:''; position:absolute; left:-6px; right:-6px; height:12px;
-    background:linear-gradient(180deg,#3a3a42,#17171c); border-radius:6px; }
-  .pole::before{ top:-7px; } .pole::after{ bottom:-7px; }
   @media (max-width:880px){
     .hero .wrap{ grid-template-columns:1fr; gap:56px; }
     .hero-visual{ min-height:auto; }
@@ -306,7 +301,7 @@
   .wa-float svg{ width:28px; height:28px; fill:#fff; }
 
   @media (prefers-reduced-motion:reduce){
-    .mono-big, .pole, h1 .oro, .mono-big .cp, .marquee-track{ animation:none !important; }
+    .mono-big, h1 .oro, .mono-big .cp, .marquee-track{ animation:none !important; }
     .rv{ opacity:1; transform:none; transition:none; }
   }
 </style>
@@ -354,7 +349,6 @@
       <div class="mono-big">
         <img src="images/logo-800.webp" alt="CP Barber — Barber Shop Pileo" class="logo-img" width="800" height="800" fetchpriority="high">
         <span class="anni"><span><b>10</b>anni di<br>esperienza</span></span>
-        <div class="pole" aria-hidden="true"></div>
       </div>
     </div>
   </div>
@@ -512,6 +506,10 @@
       </div>
       <div class="c-item rv">
         <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+        <div><b>Orari</b><span>Mar – Ven: 09:00–12:30 / 15:00–19:30<br>Sabato: orario continuato 09:00–21:00<br>Domenica e lunedì: chiuso</span></div>
+      </div>
+      <div class="c-item rv">
+        <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
         <div><b>Come funziona</b><span>Solo su appuntamento: scegli il servizio, scrivici, e quando arrivi tocca subito a te.</span></div>
       </div>
     </div>
