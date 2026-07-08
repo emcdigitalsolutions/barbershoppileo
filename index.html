@@ -18,6 +18,9 @@
 <meta property="og:url" content="https://emcdigitalsolutions.github.io/barbershoppileo/">
 <meta property="og:locale" content="it_IT">
 <meta property="og:site_name" content="Barber Shop Pileo">
+<meta property="og:image" content="https://emcdigitalsolutions.github.io/barbershoppileo/images/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 
 <!-- Schema.org -->
 <script type="application/ld+json">
@@ -28,6 +31,8 @@
   "alternateName": "CP Barber",
   "description": "Barber shop a Canicattì (AG): tagli su misura per ogni stile, cura della barba e sopracciglia. 10 anni di esperienza, servizio senza attese, relax e benessere.",
   "url": "https://emcdigitalsolutions.github.io/barbershoppileo/",
+  "image": "https://emcdigitalsolutions.github.io/barbershoppileo/images/og.jpg",
+  "logo": "https://emcdigitalsolutions.github.io/barbershoppileo/images/logo-800.webp",
   "telephone": "+393483623797",
   "founder": { "@type": "Person", "name": "Calogero Pileo" },
   "address": { "@type": "PostalAddress", "addressLocality": "Canicattì", "addressRegion": "AG", "addressCountry": "IT" },
@@ -134,11 +139,12 @@
 
   /* monogramma gigante + palo barbiere */
   .hero-visual{ position:relative; display:flex; justify-content:center; align-items:center; min-height:420px; }
-  .mono-big{ position:relative; width:min(340px,80%); aspect-ratio:.82; border:1.5px solid var(--bordo);
-    border-radius:24px; display:grid; place-items:center;
+  .mono-big{ position:relative; width:min(340px,80%); aspect-ratio:1; border:1.5px solid var(--bordo);
+    border-radius:24px; display:grid; place-items:center; overflow:visible;
     background:linear-gradient(160deg, rgba(26,26,33,.9), rgba(13,13,16,.7));
     box-shadow:0 50px 100px -40px rgba(0,0,0,.9), inset 0 1px 0 rgba(242,234,216,.05);
     animation:floaty 7s ease-in-out infinite; }
+  .mono-big .logo-img{ width:100%; height:100%; object-fit:cover; border-radius:22px; }
   @keyframes floaty{ 0%,100%{transform:translateY(0) rotate(-.5deg);} 50%{transform:translateY(-14px) rotate(.5deg);} }
   .mono-big .cp{ font-family:var(--serif); font-size:clamp(90px,14vw,130px); font-weight:700;
     background:var(--grad-oro); background-size:200% auto; -webkit-background-clip:text; background-clip:text;
@@ -216,6 +222,20 @@
   .serv .prenota:hover{ gap:13px; }
   .servizi-note{ margin-top:26px; font-size:13px; color:var(--grigio); }
   @media (max-width:880px){ .servizi-grid{ grid-template-columns:1fr; } }
+
+  /* Lavori / galleria */
+  .lavori{ background:var(--nero-2); }
+  .lavori-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:48px; }
+  .lav{ position:relative; border-radius:18px; overflow:hidden; border:1px solid var(--bordo);
+    aspect-ratio:.82; transition:transform .35s, border-color .3s, box-shadow .4s; }
+  .lav img{ width:100%; height:100%; object-fit:cover; transition:transform .6s cubic-bezier(.2,.7,.2,1); }
+  .lav::after{ content:''; position:absolute; inset:0;
+    background:linear-gradient(180deg, transparent 60%, rgba(13,13,16,.55)); opacity:.6; transition:opacity .35s; }
+  .lav:hover{ transform:translateY(-6px); border-color:rgba(201,164,71,.5);
+    box-shadow:0 26px 54px -24px rgba(0,0,0,.85), 0 0 40px -16px rgba(201,164,71,.4); }
+  .lav:hover img{ transform:scale(1.05); }
+  .lav:hover::after{ opacity:.25; }
+  @media (max-width:760px){ .lavori-grid{ grid-template-columns:repeat(2,1fr); gap:10px; } }
 
   /* Esperienza / numeri */
   .numeri{ background:var(--nero-2); }
@@ -302,6 +322,7 @@
     <nav>
       <a href="#chi">Chi sono</a>
       <a href="#servizi">Servizi</a>
+      <a href="#lavori">Lavori</a>
       <a href="#prodotti">Prodotti</a>
       <a href="#contatti">Contatti</a>
     </nav>
@@ -331,8 +352,7 @@
     </div>
     <div class="hero-visual">
       <div class="mono-big">
-        <span class="cp">CP</span>
-        <span class="sotto">Barber Shop Pileo</span>
+        <img src="images/logo-800.webp" alt="CP Barber — Barber Shop Pileo" class="logo-img" width="800" height="800" fetchpriority="high">
         <span class="anni"><span><b>10</b>anni di<br>esperienza</span></span>
         <div class="pole" aria-hidden="true"></div>
       </div>
@@ -354,8 +374,10 @@
     <div class="rv">
       <div class="s-kicker">Chi sono</div>
       <h2>Calogero Pileo,<br>barbiere per passione</h2>
-      <blockquote>«Trovo il look adatto a ogni cliente, per ogni stile. La mia unicità?
-      Dedicare a ognuno il servizio che merita: senza tempi di attesa, nel totale relax e benessere.»</blockquote>
+      <p class="s-sub" style="margin-top:18px">Trovo il look adatto a ogni cliente, per ogni stile.
+      La mia unicità? Dedicare a ognuno il servizio che merita: senza tempi di attesa,
+      nel totale relax e benessere.</p>
+      <blockquote>«Siamo artigiani. Diventiamo artisti quando le persone amano ciò che facciamo.»</blockquote>
       <div class="firma">— Calogero Pileo · CP Barber</div>
     </div>
     <div class="valori">
@@ -415,6 +437,25 @@
       </div>
     </div>
     <p class="servizi-note rv">💈 Vuoi un consiglio sul servizio giusto per te? Scrivici su WhatsApp: rispondiamo al volo.</p>
+  </div>
+</section>
+
+<!-- ═══ LAVORI ═══ -->
+<section class="lavori" id="lavori">
+  <div class="wrap">
+    <div class="rv">
+      <div class="s-kicker">I nostri lavori</div>
+      <h2>Fatti, non parole</h2>
+      <p class="s-sub">Una selezione dei tagli usciti dalla nostra poltrona. Il prossimo può essere il tuo.</p>
+    </div>
+    <div class="lavori-grid">
+      <figure class="lav rv"><img src="images/lavoro-1.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="900" height="1100"></figure>
+      <figure class="lav rv"><img src="images/lavoro-2.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="900" height="1100"></figure>
+      <figure class="lav rv"><img src="images/lavoro-3.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="900" height="1100"></figure>
+      <figure class="lav rv"><img src="images/lavoro-4.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="900" height="1100"></figure>
+      <figure class="lav rv"><img src="images/lavoro-5.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="900" height="1100"></figure>
+      <figure class="lav rv"><img src="images/lavoro-6.webp" alt="Taglio realizzato da CP Barber" loading="lazy" width="900" height="1100"></figure>
+    </div>
   </div>
 </section>
 
@@ -498,18 +539,14 @@
     </div>
     <a class="emc-credit" href="https://www.emcdigitalsolutions.it" target="_blank" rel="noopener" aria-label="EMC Digital Solutions">
       <span>Progettato e Sviluppato da</span>
-      <svg width="72" height="24" viewBox="0 0 110 36" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <defs>
+      <svg width="72" height="24" viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
           <linearGradient id="emcB" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0" stop-color="#9a7c2e"/><stop offset="1" stop-color="#e6c877"/>
           </linearGradient>
           <linearGradient id="emcT" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0" stop-color="#c9a447"/><stop offset=".5" stop-color="#e6c877"/><stop offset="1" stop-color="#c9a447"/>
           </linearGradient>
-        </defs>
-        <path d="M6 8 L20 8 M6 18 L26 18 M6 28 L20 28" stroke="url(#emcB)" stroke-width="5" stroke-linecap="round"/>
-        <text x="46" y="27" font-family="'Manrope','Segoe UI',Arial,sans-serif" font-size="20" font-weight="700" fill="url(#emcT)" letter-spacing="3">EMC</text>
-      </svg>
+        </defs><path d="M4,4 H24 L32,8 L24,12 H4 A4,4 0 0,1 4,4Z" fill="url(#emcB)"/><path d="M4,15 H20 L28,19 L20,23 H4 A4,4 0 0,1 4,15Z" fill="url(#emcB)" opacity="0.85"/><path d="M4,26 H24 L32,30 L24,34 H4 A4,4 0 0,1 4,26Z" fill="url(#emcB)"/><text x="46" y="27" font-family="'Inter','Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="20" font-weight="700" fill="url(#emcT)" letter-spacing="3">EMC</text></svg>
     </a>
   </div>
 </footer>
