@@ -22,6 +22,12 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Barber Shop Pileo — CP Barber · Canicattì">
+<meta name="twitter:description" content="Il tuo stile, la nostra arte. Tagli su misura, barba e benessere: 10 anni di esperienza, zero attese. Prenota su WhatsApp.">
+<meta name="twitter:image" content="https://barbershoppileo.it/images/og.jpg">
+
 <!-- Schema.org -->
 <script type="application/ld+json">
 {
@@ -47,6 +53,39 @@
     { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Taglio completo" } },
     { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Taglio e sopracciglia" } },
     { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Taglio, barba e sopracciglia" } }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Serve prenotare o posso passare direttamente?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Lavoriamo solo su appuntamento, proprio per garantirti zero attese: scrivici su WhatsApp o chiamaci al 348 362 3797 e concordiamo l'orario. Quando arrivi, tocca subito a te." }
+    },
+    {
+      "@type": "Question",
+      "name": "Dove vi trovate?",
+      "acceptedAnswer": { "@type": "Answer", "text": "A Canicattì, in provincia di Agrigento; serviamo anche i comuni limitrofi. L'indirizzo esatto te lo comunichiamo alla conferma dell'appuntamento." }
+    },
+    {
+      "@type": "Question",
+      "name": "Quali servizi offrite?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Taglio completo, taglio e sopracciglia, taglio con barba e sopracciglia: sempre su misura per il tuo stile. In barberia trovi anche una selezione di prodotti professionali per la cura dei capelli." }
+    },
+    {
+      "@type": "Question",
+      "name": "Quali sono gli orari di apertura?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Dal martedì al venerdì 09:00–12:30 e 15:00–19:30; il sabato orario continuato dalle 09:00 alle 21:00. Domenica e lunedì siamo chiusi." }
+    },
+    {
+      "@type": "Question",
+      "name": "Come posso prenotare?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Il modo più rapido è WhatsApp al 348 362 3797, con un messaggio anche di una sola riga; in alternativa puoi chiamarci allo stesso numero o scriverci dal modulo di contatto del sito." }
+    }
   ]
 }
 </script>
@@ -369,6 +408,20 @@
   #cf-toast.err{ background:#3a1414; color:#f2d8d8; border:1px solid #7a2e2e; }
   @media (max-width:680px){ .cf-row{ grid-template-columns:1fr; gap:0; } .cform{ padding:34px 24px; } }
 
+  /* FAQ */
+  .faq .wrap{ max-width:820px; }
+  .faq .faq-head{ margin-bottom:26px; }
+  .faq details{ border:1px solid var(--bordo); border-radius:14px; margin-top:12px; overflow:hidden;
+    background:linear-gradient(165deg, var(--nero-2), var(--nero-3)); transition:border-color .3s; }
+  .faq details[open]{ border-color:rgba(201,164,71,.4); }
+  .faq summary{ cursor:pointer; list-style:none; display:flex; justify-content:space-between;
+    align-items:center; gap:16px; padding:19px 24px; font-weight:600; font-size:15px; }
+  .faq summary::-webkit-details-marker{ display:none; }
+  .faq summary::after{ content:'+'; color:var(--oro); font-size:22px; font-weight:300; line-height:1;
+    flex-shrink:0; transition:transform .3s; }
+  .faq details[open] summary::after{ transform:rotate(45deg); }
+  .faq details p{ padding:0 24px 21px; font-size:14px; color:var(--grigio); }
+
   /* footer */
   footer{ border-top:1px solid var(--bordo); padding:44px 0 34px; background:var(--nero-2); }
   footer .wrap{ display:flex; flex-direction:column; gap:20px; align-items:center; text-align:center; }
@@ -596,6 +649,42 @@
       </div>
       <a class="btn-ghost" href="https://wa.me/393483623797?text=Ciao!%20Vorrei%20info%20sui%20prodotti%20per%20capelli" target="_blank" rel="noopener">Chiedi info</a>
     </div>
+  </div>
+</section>
+
+<!-- ═══ FAQ ═══ -->
+<section class="faq" id="faq">
+  <div class="wrap">
+    <div class="faq-head rv">
+      <div class="s-kicker">FAQ</div>
+      <h2>Domande frequenti</h2>
+    </div>
+    <details class="rv">
+      <summary>Serve prenotare o posso passare direttamente?</summary>
+      <p>Lavoriamo solo su appuntamento, proprio per garantirti zero attese: scrivici su WhatsApp
+      o chiamaci al 348 362 3797 e concordiamo l'orario. Quando arrivi, tocca subito a te.</p>
+    </details>
+    <details class="rv">
+      <summary>Dove vi trovate?</summary>
+      <p>A Canicattì, in provincia di Agrigento; serviamo anche i comuni limitrofi.
+      L'indirizzo esatto te lo comunichiamo alla conferma dell'appuntamento.</p>
+    </details>
+    <details class="rv">
+      <summary>Quali servizi offrite?</summary>
+      <p>Taglio completo, taglio e sopracciglia, taglio con barba e sopracciglia: sempre su misura
+      per il tuo stile. In barberia trovi anche una selezione di prodotti professionali per la cura dei capelli.</p>
+    </details>
+    <details class="rv">
+      <summary>Quali sono gli orari di apertura?</summary>
+      <p>Dal martedì al venerdì 09:00–12:30 e 15:00–19:30; il sabato orario continuato
+      dalle 09:00 alle 21:00. Domenica e lunedì siamo chiusi.</p>
+    </details>
+    <details class="rv">
+      <summary>Come posso prenotare?</summary>
+      <p>Il modo più rapido è WhatsApp al <a href="https://wa.me/393483623797">348 362 3797</a>,
+      con un messaggio anche di una sola riga; in alternativa puoi chiamarci allo stesso numero
+      o scriverci dal modulo di contatto qui sotto.</p>
+    </details>
   </div>
 </section>
 
