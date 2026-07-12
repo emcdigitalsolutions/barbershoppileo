@@ -380,15 +380,39 @@
   .cform h3{ font-family:var(--serif); font-size:24px; margin:8px 0 10px; }
   .cform .cf-sub{ font-size:13.5px; color:var(--grigio); margin-bottom:28px; }
   .cform label{ display:block; font-size:12.5px; font-weight:600; letter-spacing:.4px; margin-bottom:16px; }
-  .cform input[type=text], .cform input[type=email], .cform input[type=tel], .cform select, .cform textarea{
+  .cform input[type=text], .cform input[type=email], .cform input[type=tel], .cform textarea{
     width:100%; margin-top:7px; padding:13px 15px; border-radius:12px; border:1px solid var(--bordo);
     background:rgba(13,13,16,.6); color:var(--avorio); font-family:var(--sans); font-size:14.5px;
     transition:border-color .25s; }
-  .cform select{ appearance:none; -webkit-appearance:none; cursor:pointer;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23c9a447' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat:no-repeat; background-position:right 16px center; padding-right:38px; }
-  .cform select option{ background:var(--nero-2); color:var(--avorio); }
-  .cform input:focus, .cform select:focus, .cform textarea:focus{ outline:none; border-color:var(--oro); }
+  .cform input:focus, .cform textarea:focus{ outline:none; border-color:var(--oro); }
+  /* mini calendario disponibilità */
+  .cf-cal{ margin-bottom:16px; }
+  .cf-cal-title{ display:block; font-size:12.5px; font-weight:600; letter-spacing:.4px; margin-bottom:10px; }
+  .cf-cal-title small{ font-weight:400; color:var(--grigio); letter-spacing:0; }
+  .cf-days{ display:flex; gap:8px; overflow-x:auto; padding-bottom:6px; scrollbar-width:thin;
+    scrollbar-color:rgba(201,164,71,.35) transparent; }
+  .cf-day{ flex:0 0 auto; min-width:62px; padding:9px 8px 7px; border:1px solid var(--bordo); border-radius:12px;
+    background:rgba(13,13,16,.6); color:var(--avorio); font-family:var(--sans); text-align:center;
+    cursor:pointer; transition:border-color .25s, background .25s; }
+  .cf-day small{ display:block; font-size:9.5px; letter-spacing:1.5px; text-transform:uppercase;
+    color:var(--grigio); }
+  .cf-day b{ display:block; font-size:17px; font-weight:700; margin:1px 0; }
+  .cf-day:hover{ border-color:rgba(201,164,71,.5); }
+  .cf-day.attivo{ border-color:var(--oro); background:rgba(201,164,71,.12); }
+  .cf-day .dot{ display:block; width:5px; height:5px; border-radius:50%; background:transparent; margin:3px auto 0; }
+  .cf-day.con-scelte .dot{ background:var(--oro); }
+  .cf-slots{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+  .cf-slot{ padding:8px 14px; border:1px solid var(--bordo); border-radius:999px; background:rgba(13,13,16,.6);
+    color:var(--avorio); font-size:13px; font-family:var(--sans); cursor:pointer;
+    transition:background .25s, border-color .25s, color .25s; }
+  .cf-slot:hover{ border-color:var(--oro); }
+  .cf-slot.sel{ background:var(--grad-oro); color:#141005; border-color:transparent; font-weight:700; }
+  .cf-picked{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  .cf-pick{ display:inline-flex; align-items:center; gap:8px; font-size:12.5px; color:var(--oro-chiaro);
+    border:1px dashed rgba(201,164,71,.45); border-radius:999px; padding:6px 12px; }
+  .cf-pick button{ background:none; border:0; color:var(--grigio); cursor:pointer;
+    font-size:16px; line-height:1; padding:0; }
+  .cf-pick button:hover{ color:var(--avorio); }
   .cform ::placeholder{ color:rgba(155,150,138,.55); }
   .cform textarea{ resize:vertical; min-height:120px; }
   .cf-row{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
@@ -755,18 +779,14 @@
             <input type="tel" name="phone" inputmode="tel" autocomplete="tel" placeholder="348 000 0000">
           </label>
         </div>
-        <div class="cf-row">
-          <label>Email *
-            <input type="email" name="email" required autocomplete="email" placeholder="latua@email.it">
-          </label>
-          <label>Fascia oraria preferita
-            <select name="slot">
-              <option value="">Nessuna preferenza</option>
-              <option>Mattina (mar–ven, 09:00–12:30)</option>
-              <option>Pomeriggio (mar–ven, 15:00–19:30)</option>
-              <option>Sabato (09:00–21:00)</option>
-            </select>
-          </label>
+        <label>Email *
+          <input type="email" name="email" required autocomplete="email" placeholder="latua@email.it">
+        </label>
+        <div class="cf-cal">
+          <span class="cf-cal-title">Quando preferiresti venire? <small>facoltativo — puoi scegliere più giorni e più fasce</small></span>
+          <div class="cf-days" id="cf-days" aria-label="Scegli un giorno"></div>
+          <div class="cf-slots" id="cf-slots" aria-label="Scegli una fascia oraria"></div>
+          <div class="cf-picked" id="cf-picked" aria-live="polite"></div>
         </div>
         <label>Messaggio *
           <textarea name="message" required placeholder="Ciao! Vorrei informazioni su…"></textarea>
@@ -874,18 +894,106 @@
     tmr = setTimeout(function(){ toast.className = ''; }, 6000);
   }
 
+  // ── mini calendario: prossimi 14 giorni di apertura (dom + lun chiusi) ──
+  var GIORNI = ['dom','lun','mar','mer','gio','ven','sab'];
+  var MESI = ['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
+  var SLOT_SETT = ['09:00–11:00','11:00–12:30','15:00–17:00','17:30–19:30'];
+  var SLOT_SAB  = ['09:00–11:00','11:00–13:00','13:00–15:00','15:00–17:00','17:00–19:00','19:00–21:00'];
+  var daysEl = document.getElementById('cf-days');
+  var slotsEl = document.getElementById('cf-slots');
+  var pickedEl = document.getElementById('cf-picked');
+  var scelte = {};      // 'aaaa-m-g' -> { label:'mar 14 lug', slots:[...] }
+  var attivo = null;
+  var giorniAperti = [];
+  var cur = new Date();
+  while (giorniAperti.length < 14) {
+    cur.setDate(cur.getDate() + 1);
+    if (cur.getDay() === 0 || cur.getDay() === 1) continue;
+    giorniAperti.push(new Date(cur));
+  }
+  function keyDi(g){ return g.getFullYear() + '-' + (g.getMonth()+1) + '-' + g.getDate(); }
+  function labelDi(g){ return GIORNI[g.getDay()] + ' ' + g.getDate() + ' ' + MESI[g.getMonth()]; }
+
+  giorniAperti.forEach(function(g){
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'cf-day';
+    btn.dataset.key = keyDi(g);
+    btn.innerHTML = '<small>' + GIORNI[g.getDay()] + '</small><b>' + g.getDate() + '</b><small>' + MESI[g.getMonth()] + '</small><span class="dot"></span>';
+    btn.addEventListener('click', function(){ attivo = keyDi(g); renderDays(); renderSlots(g); });
+    daysEl.appendChild(btn);
+  });
+
+  function renderDays(){
+    [].forEach.call(daysEl.children, function(b){
+      b.classList.toggle('attivo', b.dataset.key === attivo);
+      b.classList.toggle('con-scelte', !!(scelte[b.dataset.key] && scelte[b.dataset.key].slots.length));
+    });
+  }
+  function renderSlots(g){
+    var key = keyDi(g);
+    slotsEl.innerHTML = '';
+    (g.getDay() === 6 ? SLOT_SAB : SLOT_SETT).forEach(function(f){
+      var s = document.createElement('button');
+      s.type = 'button';
+      s.className = 'cf-slot' + (scelte[key] && scelte[key].slots.indexOf(f) !== -1 ? ' sel' : '');
+      s.textContent = f;
+      s.addEventListener('click', function(){
+        if (!scelte[key]) scelte[key] = { label: labelDi(g), slots: [] };
+        var i = scelte[key].slots.indexOf(f);
+        if (i === -1) scelte[key].slots.push(f); else scelte[key].slots.splice(i, 1);
+        if (!scelte[key].slots.length) delete scelte[key];
+        s.classList.toggle('sel');
+        renderDays(); renderPicked();
+      });
+      slotsEl.appendChild(s);
+    });
+  }
+  function renderPicked(){
+    pickedEl.innerHTML = '';
+    Object.keys(scelte).forEach(function(k){
+      scelte[k].slots.forEach(function(f){
+        var chip = document.createElement('span');
+        chip.className = 'cf-pick';
+        chip.appendChild(document.createTextNode(scelte[k].label + ' · ' + f));
+        var x = document.createElement('button');
+        x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', 'Rimuovi ' + scelte[k].label + ' ' + f);
+        x.addEventListener('click', function(){
+          var i = scelte[k].slots.indexOf(f);
+          if (i !== -1) scelte[k].slots.splice(i, 1);
+          if (scelte[k] && !scelte[k].slots.length) delete scelte[k];
+          renderDays(); renderPicked();
+          if (attivo === k) {
+            var g = giorniAperti.filter(function(gg){ return keyDi(gg) === k; })[0];
+            if (g) renderSlots(g);
+          }
+        });
+        chip.appendChild(x);
+        pickedEl.appendChild(chip);
+      });
+    });
+  }
+  function resetCalendario(){
+    scelte = {}; attivo = null;
+    slotsEl.innerHTML = ''; pickedEl.innerHTML = '';
+    renderDays();
+  }
+
   form.addEventListener('submit', function(ev){
     ev.preventDefault();
     if (!form.checkValidity()){ form.reportValidity(); return; }
     var btn = form.querySelector('.cf-btn');
     btn.disabled = true; btn.textContent = 'Invio in corso…';
-    var slot = form.slot.value;
+    var righe = [];
+    Object.keys(scelte).forEach(function(k){
+      righe.push('- ' + scelte[k].label + ': ' + scelte[k].slots.join(', '));
+    });
     var data = {
       site: 'barbershoppileo',
       name: form.name.value.trim(),
       email: form.email.value.trim(),
       phone: form.phone.value.trim(),
-      message: (slot ? 'Fascia oraria preferita: ' + slot + '\n\n' : '') + form.message.value.trim()
+      message: (righe.length ? 'Giorni e fasce orarie preferite:\n' + righe.join('\n') + '\n\n' : '') + form.message.value.trim()
     };
     fetch(API, {
       method: 'POST',
@@ -895,6 +1003,7 @@
     }).then(function(){
       show('Messaggio inviato! Ti risponderemo il prima possibile.', true);
       form.reset();
+      resetCalendario();
     }).catch(function(){
       show('Ops, invio non riuscito. Scrivici su WhatsApp al 348 362 3797.', false);
     }).finally(function(){
