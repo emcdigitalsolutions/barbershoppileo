@@ -380,11 +380,15 @@
   .cform h3{ font-family:var(--serif); font-size:24px; margin:8px 0 10px; }
   .cform .cf-sub{ font-size:13.5px; color:var(--grigio); margin-bottom:28px; }
   .cform label{ display:block; font-size:12.5px; font-weight:600; letter-spacing:.4px; margin-bottom:16px; }
-  .cform input[type=text], .cform input[type=email], .cform input[type=tel], .cform textarea{
+  .cform input[type=text], .cform input[type=email], .cform input[type=tel], .cform select, .cform textarea{
     width:100%; margin-top:7px; padding:13px 15px; border-radius:12px; border:1px solid var(--bordo);
     background:rgba(13,13,16,.6); color:var(--avorio); font-family:var(--sans); font-size:14.5px;
     transition:border-color .25s; }
-  .cform input:focus, .cform textarea:focus{ outline:none; border-color:var(--oro); }
+  .cform select{ appearance:none; -webkit-appearance:none; cursor:pointer;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23c9a447' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 16px center; padding-right:38px; }
+  .cform select option{ background:var(--nero-2); color:var(--avorio); }
+  .cform input:focus, .cform select:focus, .cform textarea:focus{ outline:none; border-color:var(--oro); }
   .cform ::placeholder{ color:rgba(155,150,138,.55); }
   .cform textarea{ resize:vertical; min-height:120px; }
   .cf-row{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
@@ -751,9 +755,19 @@
             <input type="tel" name="phone" inputmode="tel" autocomplete="tel" placeholder="348 000 0000">
           </label>
         </div>
-        <label>Email *
-          <input type="email" name="email" required autocomplete="email" placeholder="latua@email.it">
-        </label>
+        <div class="cf-row">
+          <label>Email *
+            <input type="email" name="email" required autocomplete="email" placeholder="latua@email.it">
+          </label>
+          <label>Fascia oraria preferita
+            <select name="slot">
+              <option value="">Nessuna preferenza</option>
+              <option>Mattina (mar–ven, 09:00–12:30)</option>
+              <option>Pomeriggio (mar–ven, 15:00–19:30)</option>
+              <option>Sabato (09:00–21:00)</option>
+            </select>
+          </label>
+        </div>
         <label>Messaggio *
           <textarea name="message" required placeholder="Ciao! Vorrei informazioni su…"></textarea>
         </label>
@@ -865,12 +879,13 @@
     if (!form.checkValidity()){ form.reportValidity(); return; }
     var btn = form.querySelector('.cf-btn');
     btn.disabled = true; btn.textContent = 'Invio in corso…';
+    var slot = form.slot.value;
     var data = {
       site: 'barbershoppileo',
       name: form.name.value.trim(),
       email: form.email.value.trim(),
       phone: form.phone.value.trim(),
-      message: form.message.value.trim()
+      message: (slot ? 'Fascia oraria preferita: ' + slot + '\n\n' : '') + form.message.value.trim()
     };
     fetch(API, {
       method: 'POST',
