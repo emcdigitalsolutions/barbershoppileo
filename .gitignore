@@ -1,2 +1,5 @@
 images/*.jpg
 !images/og.jpg
+
+# dominio: committare quando DNS Aruba configurato
+CNAME
