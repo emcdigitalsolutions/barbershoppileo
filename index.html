@@ -331,6 +331,44 @@
   .btn-fresha:hover{ border-color:var(--oro); }
   @media (max-width:880px){ .contatti .wrap{ grid-template-columns:1fr; } }
 
+  /* Form contatti */
+  .cf-outer{ max-width:760px; margin:70px auto 0; padding:0 24px; }
+  .cform{ border:1px solid var(--bordo); border-radius:22px; padding:44px 40px;
+    background:linear-gradient(165deg, var(--nero-2), var(--nero-3));
+    box-shadow:0 40px 80px -40px rgba(0,0,0,.9); }
+  .cform h3{ font-family:var(--serif); font-size:24px; margin:8px 0 10px; }
+  .cform .cf-sub{ font-size:13.5px; color:var(--grigio); margin-bottom:28px; }
+  .cform label{ display:block; font-size:12.5px; font-weight:600; letter-spacing:.4px; margin-bottom:16px; }
+  .cform input[type=text], .cform input[type=email], .cform input[type=tel], .cform textarea{
+    width:100%; margin-top:7px; padding:13px 15px; border-radius:12px; border:1px solid var(--bordo);
+    background:rgba(13,13,16,.6); color:var(--avorio); font-family:var(--sans); font-size:14.5px;
+    transition:border-color .25s; }
+  .cform input:focus, .cform textarea:focus{ outline:none; border-color:var(--oro); }
+  .cform ::placeholder{ color:rgba(155,150,138,.55); }
+  .cform textarea{ resize:vertical; min-height:120px; }
+  .cf-row{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cf-priv{ display:flex; gap:10px; align-items:flex-start; font-weight:400; color:var(--grigio);
+    font-size:12.5px; letter-spacing:0; cursor:pointer; }
+  .cf-priv input{ margin-top:3px; accent-color:var(--oro); flex-shrink:0; }
+  .cf-priv a{ color:var(--oro-chiaro); text-decoration:underline; }
+  .cf-btn{ display:inline-flex; align-items:center; justify-content:center; gap:9px; width:100%;
+    background:var(--grad-oro); background-size:180% auto; color:#141005; font-weight:700;
+    font-family:var(--sans); font-size:15px; letter-spacing:.6px; padding:16px; border:0;
+    border-radius:999px; cursor:pointer; margin-top:6px;
+    transition:background-position .5s, transform .25s, box-shadow .3s, opacity .3s;
+    box-shadow:0 8px 28px -10px rgba(201,164,71,.55); }
+  .cf-btn:hover{ background-position:right center; transform:translateY(-2px);
+    box-shadow:0 14px 36px -10px rgba(201,164,71,.7); }
+  .cf-btn:disabled{ opacity:.55; cursor:wait; transform:none; }
+  #cf-toast{ position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(16px);
+    opacity:0; pointer-events:none; z-index:200; padding:14px 24px; border-radius:14px;
+    font-size:14px; font-weight:600; max-width:min(90vw,480px); text-align:center;
+    transition:opacity .35s, transform .35s; }
+  #cf-toast.show{ opacity:1; transform:translateX(-50%); }
+  #cf-toast.ok{ background:var(--grad-oro); color:#141005; box-shadow:0 14px 36px -10px rgba(201,164,71,.6); }
+  #cf-toast.err{ background:#3a1414; color:#f2d8d8; border:1px solid #7a2e2e; }
+  @media (max-width:680px){ .cf-row{ grid-template-columns:1fr; gap:0; } .cform{ padding:34px 24px; } }
+
   /* footer */
   footer{ border-top:1px solid var(--bordo); padding:44px 0 34px; background:var(--nero-2); }
   footer .wrap{ display:flex; flex-direction:column; gap:20px; align-items:center; text-align:center; }
@@ -605,7 +643,40 @@
       <div class="tel">oppure chiama il <a href="tel:+393483623797">348 362 3797</a></div>
     </div>
   </div>
+
+  <!-- Form contatti (Apps Script condiviso EMC, site=barbershoppileo) -->
+  <div class="cf-outer">
+    <div class="cform rv">
+      <div class="s-kicker">Scrivici</div>
+      <h3>Preferisci scrivere con calma?</h3>
+      <p class="cf-sub">Compila il modulo: il messaggio arriva dritto nella nostra casella
+      e ti rispondiamo il prima possibile.</p>
+      <form id="cf" novalidate>
+        <div class="cf-row">
+          <label>Nome e cognome *
+            <input type="text" name="name" required autocomplete="name" placeholder="Il tuo nome">
+          </label>
+          <label>Telefono
+            <input type="tel" name="phone" inputmode="tel" autocomplete="tel" placeholder="348 000 0000">
+          </label>
+        </div>
+        <label>Email *
+          <input type="email" name="email" required autocomplete="email" placeholder="latua@email.it">
+        </label>
+        <label>Messaggio *
+          <textarea name="message" required placeholder="Ciao! Vorrei informazioni su…"></textarea>
+        </label>
+        <label class="cf-priv">
+          <input type="checkbox" name="privacy" required>
+          <span>Ho letto e accetto la <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> *</span>
+        </label>
+        <button type="submit" class="cf-btn">Invia il messaggio</button>
+      </form>
+    </div>
+  </div>
 </section>
+
+<div id="cf-toast" role="status" aria-live="polite"></div>
 
 <footer>
   <div class="wrap">
@@ -678,6 +749,52 @@
   // recensioni: duplica le card per il loop continuo senza salti
   var rs = document.getElementById('rec-strip');
   if (rs) rs.innerHTML += rs.innerHTML;
+})();
+</script>
+
+<!-- Form contatti: handler isolato (endpoint Apps Script condiviso EMC) -->
+<script>
+(function(){
+  'use strict';
+  var API = 'https://script.google.com/macros/s/AKfycbxLCgN0-mHN86Dk37a5m-p2A3DgMjc8b__aCO_9oBA_amLUn5MlipebKalo5qNIoSWl/exec';
+  var form = document.getElementById('cf');
+  var toast = document.getElementById('cf-toast');
+  if (!form || !toast) return;
+
+  var tmr;
+  function show(msg, ok){
+    toast.textContent = msg;
+    toast.className = 'show ' + (ok ? 'ok' : 'err');
+    clearTimeout(tmr);
+    tmr = setTimeout(function(){ toast.className = ''; }, 6000);
+  }
+
+  form.addEventListener('submit', function(ev){
+    ev.preventDefault();
+    if (!form.checkValidity()){ form.reportValidity(); return; }
+    var btn = form.querySelector('.cf-btn');
+    btn.disabled = true; btn.textContent = 'Invio in corso…';
+    var data = {
+      site: 'barbershoppileo',
+      name: form.name.value.trim(),
+      email: form.email.value.trim(),
+      phone: form.phone.value.trim(),
+      message: form.message.value.trim()
+    };
+    fetch(API, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(data)
+    }).then(function(){
+      show('Messaggio inviato! Ti risponderemo il prima possibile.', true);
+      form.reset();
+    }).catch(function(){
+      show('Ops, invio non riuscito. Scrivici su WhatsApp al 348 362 3797.', false);
+    }).finally(function(){
+      btn.disabled = false; btn.textContent = 'Invia il messaggio';
+    });
+  });
 })();
 </script>
 </body>
